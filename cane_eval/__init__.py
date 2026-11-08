@@ -30,6 +30,17 @@ from cane_eval.integrations import (
     evaluate_phlote,
 )
 
+# Swarm (multi-agent evaluation)
+from cane_eval.swarm import (
+    SwarmSuite,
+    SwarmReliabilityRunner,
+    SwarmJudge,
+    SwarmResult,
+    SwarmSummary,
+    SwarmTrace,
+    SwarmReliabilityConfig,
+)
+
 __all__ = [
     # Providers
     "get_provider",
@@ -74,4 +85,12 @@ __all__ = [
     "evaluate_openai",
     "evaluate_fastapi",
     "evaluate_phlote",
+    # Swarm
+    "SwarmSuite",
+    "SwarmReliabilityRunner",
+    "SwarmJudge",
+    "SwarmResult",
+    "SwarmSummary",
+    "SwarmTrace",
+    "SwarmReliabilityConfig",
 ]

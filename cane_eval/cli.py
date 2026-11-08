@@ -724,6 +724,147 @@ def cmd_preflight(args):
     sys.exit(0 if result["ok"] else 1)
 
 
+def print_swarm_result(result, index, total):
+    """Print a single swarm eval result."""
+    q = result.test_case.question[:60] + "..." if len(result.test_case.question) > 60 else result.test_case.question
+    badge = _status_badge(result.status)
+    score = _score_color(result.overall_score)
+    bar = _bar(result.overall_score)
+
+    outcome = _score_color(result.outcome_score)
+    process = _score_color(result.process_score)
+
+    print(f"  {badge} {c(f'{index}/{total}', 'dim')} {bar} {score}  {q}")
+    print(f"         outcome={outcome}  process={process}  "
+          f"{c(f'route={result.routing_score:.0f}', 'dim')}  "
+          f"{c(f'handoff={result.handoff_score:.0f}', 'dim')}  "
+          f"{c(f'ctx={result.context_score:.0f}', 'dim')}  "
+          f"{c(f'conv={result.convergence_score:.0f}', 'dim')}")
+
+    if result.status == "fail" and result.reasoning:
+        print(f"         {c(result.reasoning[:120], 'dim')}")
+
+
+def print_swarm_summary(summary):
+    """Print swarm eval run summary."""
+    print()
+    print(c("  =" * 40, "dim"))
+    print()
+    print(f"  {c(summary.suite_name, 'bold')}  {c(f'swarm ({summary.topology_type})', 'cyan')}  {c(f'{summary.duration_seconds:.1f}s', 'dim')}")
+    print()
+
+    # Score bar
+    bar = _bar(summary.overall_score, 30)
+    score = _score_color(summary.overall_score)
+    print(f"  Overall: {bar} {score}")
+    print()
+
+    # Outcome vs Process
+    outcome_bar = _bar(summary.outcome_avg, 20)
+    process_bar = _bar(summary.process_avg, 20)
+    print(f"  Outcome: {outcome_bar} {_score_color(summary.outcome_avg)}")
+    print(f"  Process: {process_bar} {_score_color(summary.process_avg)}")
+    print()
+
+    # Pass/Warn/Fail
+    p = c(f"{summary.passed} passed", "green")
+    w = c(f"{summary.warned} warned", "yellow")
+    f_count = c(f"{summary.failed} failed", "red")
+    print(f"  {p}  {w}  {f_count}  ({summary.total} total)")
+    print(f"  Pass rate: {c(f'{summary.pass_rate:.0f}%', 'bold')}")
+
+    # Per-agent table
+    if summary.per_agent_summary:
+        print()
+        print(f"  {c('Per-Agent Performance:', 'bold')}")
+        for agent_id, info in summary.per_agent_summary.items():
+            role = info.get("role", agent_id)
+            avg = info.get("avg_score", 0)
+            appearances = info.get("appearances", 0)
+            agent_bar = _bar(avg, 15)
+            print(f"    {c(agent_id, 'cyan'):20s} {c(role, 'dim'):25s} {agent_bar} {_score_color(avg)}  ({appearances} tests)")
+
+    # Reliability score
+    if summary.reliability_score is not None:
+        grade = _grade_color(summary.reliability_grade)
+        rel_bar = _bar(summary.reliability_score, 20)
+        rel_score = _score_color(summary.reliability_score)
+        print()
+        print(f"  {c('Swarm Reliability:', 'bold')} {rel_bar} {rel_score} ({grade})")
+
+    print()
+
+
+def cmd_swarm(args):
+    """Run swarm (multi-agent) eval suite."""
+    from cane_eval.swarm.suite import SwarmSuite
+    from cane_eval.swarm.engine import SwarmReliabilityRunner
+
+    # Load suite
+    try:
+        suite = SwarmSuite.from_yaml(args.suite)
+    except FileNotFoundError:
+        print(c(f"  Error: Suite file not found: {args.suite}", "red"))
+        sys.exit(1)
+    except Exception as e:
+        print(c(f"  Error loading suite: {e}", "red"))
+        sys.exit(1)
+
+    # Override model if specified
+    if args.model:
+        suite.model = args.model
+
+    topo = suite.topology
+    print()
+    print(f"  {c('cane-eval swarm', 'cyan')} {c(suite.name, 'bold')}")
+    print(f"  {len(suite.tests)} scenarios | {topo.type.value} topology | {len(topo.agents)} agents | model: {suite.model}")
+    print()
+
+    # Parse tags
+    tags = args.tags.split(",") if args.tags else None
+
+    # Provider setup
+    provider = getattr(args, "provider", "anthropic") or "anthropic"
+    base_url = getattr(args, "base_url", None)
+
+    from cane_eval.providers import PROVIDERS, PROVIDER_ALIASES
+    resolved = PROVIDER_ALIASES.get(provider.lower(), provider.lower())
+    provider_cls = PROVIDERS.get(resolved)
+    env_key = provider_cls.env_key() if provider_cls else "ANTHROPIC_API_KEY"
+
+    # Concurrency
+    concurrency = args.concurrency if args.concurrency else suite.concurrency
+
+    # Run
+    runner = SwarmReliabilityRunner(
+        api_key=args.api_key or os.environ.get(env_key),
+        model=args.model,
+        verbose=not args.quiet,
+        on_result=print_swarm_result if not args.quiet else None,
+        provider=provider,
+        base_url=base_url,
+        concurrency=concurrency,
+    )
+
+    summary = runner.run(suite, tags=tags)
+
+    # Print summary
+    if not args.quiet:
+        print_swarm_summary(summary)
+
+    # Save results JSON
+    if args.output_json:
+        with open(args.output_json, "w") as f:
+            json.dump(summary.to_dict(), f, indent=2)
+        print(f"  Results saved to {args.output_json}")
+
+    # Exit code
+    if args.fail_on_warn:
+        sys.exit(1 if (summary.failed > 0 or summary.warned > 0) else 0)
+    else:
+        sys.exit(1 if summary.failed > 0 else 0)
+
+
 def cmd_validate(args):
     """Validate a test suite YAML file."""
     from cane_eval.suite import ReliabilitySuite
@@ -806,6 +947,19 @@ def main():
     demo_parser = subparsers.add_parser("demo", help="Run built-in demo (no setup required)")
     demo_parser.add_argument("--with-rca", action="store_true", help="Include root cause analysis")
 
+    # swarm
+    swarm_parser = subparsers.add_parser("swarm", help="Run a swarm (multi-agent) reliability eval")
+    swarm_parser.add_argument("suite", help="Path to swarm YAML test suite")
+    swarm_parser.add_argument("--model", help="Override judge model")
+    swarm_parser.add_argument("--api-key", help="API key (or set env var)")
+    swarm_parser.add_argument("--tags", help="Comma-separated tag filter")
+    swarm_parser.add_argument("--output-json", help="Save full results as JSON")
+    swarm_parser.add_argument("--quiet", "-q", action="store_true", help="Minimal output")
+    swarm_parser.add_argument("--fail-on-warn", action="store_true", help="Exit 1 on warnings too")
+    swarm_parser.add_argument("--provider", default="anthropic", help="Judge provider")
+    swarm_parser.add_argument("--base-url", help="Base URL for OpenAI-compatible endpoints")
+    swarm_parser.add_argument("--concurrency", "-j", type=int, default=0, help="Parallel test execution")
+
     # preflight
     preflight_parser = subparsers.add_parser("preflight", help="Check agent endpoints before running eval")
     preflight_parser.add_argument("suite", help="Path to YAML test suite")
@@ -823,6 +977,8 @@ def main():
         cmd_validate(args)
     elif args.command == "demo":
         cmd_demo(args)
+    elif args.command == "swarm":
+        cmd_swarm(args)
     elif args.command == "preflight":
         cmd_preflight(args)
     else:

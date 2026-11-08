@@ -1,0 +1,152 @@
+name: Customer Support Swarm Eval
+description: Evaluates a multi-agent support system with router + specialists
+mode: swarm-trace
+model: claude-sonnet-4-5-20250929
+
+topology:
+  type: orchestrator
+  orchestrator: router
+  agents:
+    - id: router
+      role: Router / Orchestrator
+      description: Routes customer queries to the right specialist
+    - id: billing
+      role: Billing Specialist
+      description: Handles billing, payments, and refund questions
+      capabilities: [billing, payments, refunds]
+    - id: tech
+      role: Technical Support
+      description: Handles password resets, account access, technical issues
+      capabilities: [passwords, accounts, technical]
+
+criteria:
+  - key: outcome
+    label: Final Answer Quality
+    weight: 35
+  - key: routing
+    label: Routing Correctness
+    weight: 20
+  - key: handoff
+    label: Handoff Quality
+    weight: 15
+  - key: context_preservation
+    label: Context Preservation
+    weight: 15
+  - key: convergence
+    label: Convergence
+    weight: 15
+
+custom_rules:
+  - The orchestrator must not answer questions directly
+  - Billing questions must route to the billing agent
+  - Technical questions must route to the tech agent
+
+tests:
+  # Test 1: Simple billing query with correct routing
+  - question: "What is the status of my refund for order #12345?"
+    expected_answer: "Your refund for order #12345 is being processed and should arrive within 5-7 business days."
+    expected_route: [router, billing]
+    expected_agents: [billing]
+    max_turns: 4
+    tags: [billing, refunds]
+    trace:
+      - from: user
+        to: router
+        content: "What is the status of my refund for order #12345?"
+      - from: router
+        to: billing
+        role: handoff
+        content: "Customer asking about refund status for order #12345"
+        metadata: {routing_reason: "refund query matches billing capabilities"}
+      - from: billing
+        to: router
+        content: "Refund for order #12345 is being processed. Expected arrival: 5-7 business days."
+      - from: router
+        to: user
+        role: final
+        content: "Your refund for order #12345 is being processed and should arrive within 5-7 business days."
+
+  # Test 2: Technical support query
+  - question: "I can't log into my account, it says my password is wrong"
+    expected_answer: "You can reset your password by going to Settings > Security > Reset Password. Check your email for the reset link."
+    expected_route: [router, tech]
+    expected_agents: [tech]
+    max_turns: 4
+    tags: [technical, accounts]
+    trace:
+      - from: user
+        to: router
+        content: "I can't log into my account, it says my password is wrong"
+      - from: router
+        to: tech
+        role: handoff
+        content: "Customer having login issues, password not working"
+        metadata: {routing_reason: "password/login issue matches tech capabilities"}
+      - from: tech
+        to: router
+        content: "For password reset: Go to Settings > Security > Reset Password. A reset link will be sent to the registered email."
+      - from: router
+        to: user
+        role: final
+        content: "You can reset your password by going to Settings > Security > Reset Password. Check your email for the reset link."
+
+  # Test 3: Multi-agent scenario (needs both billing and tech)
+  - question: "I can't log in and I also need to update my payment method"
+    expected_answer: "For login issues, reset your password at Settings > Security. For payment updates, go to Account > Payment Methods once logged in."
+    expected_agents: [tech, billing]
+    max_turns: 6
+    tags: [multi-agent, complex]
+    trace:
+      - from: user
+        to: router
+        content: "I can't log in and I also need to update my payment method"
+      - from: router
+        to: tech
+        role: handoff
+        content: "Customer cannot log in — handle login/password issue first"
+        metadata: {routing_reason: "login issue is blocking, handle first"}
+      - from: tech
+        to: router
+        content: "Password reset: Go to Settings > Security > Reset Password."
+      - from: router
+        to: billing
+        role: handoff
+        content: "Customer also needs to update payment method after login is resolved"
+        metadata: {routing_reason: "payment method update is a billing task"}
+      - from: billing
+        to: router
+        content: "Payment method can be updated at Account > Payment Methods."
+      - from: router
+        to: user
+        role: final
+        content: "For login issues, reset your password at Settings > Security. For payment updates, go to Account > Payment Methods once logged in."
+
+  # Test 4: Misrouted query (routing should score poorly)
+  - question: "How do I get a refund for my subscription?"
+    expected_answer: "To request a subscription refund, go to Account > Subscriptions > Cancel & Refund."
+    expected_route: [router, billing]
+    expected_agents: [billing]
+    max_turns: 4
+    tags: [billing, routing-test]
+    trace:
+      - from: user
+        to: router
+        content: "How do I get a refund for my subscription?"
+      - from: router
+        to: tech
+        role: handoff
+        content: "Customer wants a refund"
+      - from: tech
+        to: router
+        content: "I handle technical issues. This seems like a billing question."
+      - from: router
+        to: billing
+        role: handoff
+        content: "Redirecting: customer wants subscription refund"
+      - from: billing
+        to: router
+        content: "For subscription refund: Account > Subscriptions > Cancel & Refund."
+      - from: router
+        to: user
+        role: final
+        content: "To request a subscription refund, go to Account > Subscriptions > Cancel & Refund."

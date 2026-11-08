@@ -1,0 +1,75 @@
+name: Customer Support Swarm (Orchestrated)
+description: Multi-agent support system — cane-eval executes the swarm and captures traces
+mode: swarm
+model: claude-sonnet-4-5-20250929
+
+topology:
+  type: orchestrator
+  orchestrator: router
+
+  agents:
+    - id: router
+      role: Router / Orchestrator
+      description: Routes customer queries to the right specialist
+      type: callable  # Will use agent_callables passed at runtime
+
+    - id: billing
+      role: Billing Specialist
+      description: Handles billing, payments, and refund questions
+      capabilities: [billing, payments, refunds]
+      type: callable
+
+    - id: tech
+      role: Technical Support
+      description: Handles password resets, account access, technical issues
+      capabilities: [passwords, accounts, technical]
+      type: callable
+
+  # For HTTP agents, configure like:
+  # - id: billing
+  #   type: http
+  #   url: https://billing-agent.internal/ask
+  #   payload_template: '{"message": "{{message}}"}'
+  #   response_path: data.answer
+
+criteria:
+  - key: outcome
+    label: Final Answer Quality
+    weight: 35
+  - key: routing
+    label: Routing Correctness
+    weight: 20
+  - key: handoff
+    label: Handoff Quality
+    weight: 15
+  - key: context_preservation
+    label: Context Preservation
+    weight: 15
+  - key: convergence
+    label: Convergence
+    weight: 15
+
+custom_rules:
+  - The orchestrator must route billing questions to the billing agent
+  - The orchestrator must route technical questions to the tech agent
+
+tests:
+  - question: "What is the status of my refund for order #12345?"
+    expected_answer: "Your refund for order #12345 is being processed and should arrive within 5-7 business days."
+    expected_route: [router, billing]
+    expected_agents: [billing]
+    max_turns: 6
+    tags: [billing, refunds]
+
+  - question: "I can't log into my account"
+    expected_answer: "Reset your password at Settings > Security > Reset Password."
+    expected_route: [router, tech]
+    expected_agents: [tech]
+    max_turns: 6
+    tags: [technical, accounts]
+
+  - question: "I need help with my payment and also can't access my account"
+    expected_answer: "For account access, reset at Settings > Security. For payment, go to Account > Payment Methods."
+    expected_agents: [tech, billing]
+    max_turns: 8
+    tags: [multi-agent, complex]
