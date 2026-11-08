@@ -1,14 +1,14 @@
 """Tests for swarm judge and criteria scoring."""
 
 import pytest
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmMessage,
     SwarmMessageRole,
     SwarmTrace,
     SwarmTestCase,
     SwarmResult,
 )
-from cane_eval.swarm.criteria import (
+from sparse_eval.swarm.criteria import (
     SwarmEvalContext,
     RoutingCriterion,
     HandoffCriterion,
@@ -243,7 +243,7 @@ class TestCollaboration:
 
 class TestTraceParsing:
     def test_parse_inline_trace(self):
-        from cane_eval.swarm.trace import parse_trace
+        from sparse_eval.swarm.trace import parse_trace
 
         data = [
             {"from": "user", "to": "router", "content": "Hello"},
@@ -256,7 +256,7 @@ class TestTraceParsing:
         assert trace.messages[1].role == SwarmMessageRole.FINAL
 
     def test_parse_trace_fallback_final(self):
-        from cane_eval.swarm.trace import parse_trace
+        from sparse_eval.swarm.trace import parse_trace
 
         data = [
             {"from": "user", "to": "router", "content": "Hello"},
@@ -270,7 +270,7 @@ class TestTraceParsing:
 
 class TestSwarmSuite:
     def test_load_example_yaml(self):
-        from cane_eval.swarm.suite import SwarmSuite
+        from sparse_eval.swarm.suite import SwarmSuite
         from pathlib import Path
 
         suite_path = Path(__file__).parent.parent / "examples" / "swarm_trace.yaml"
@@ -290,7 +290,7 @@ class TestSwarmSuite:
             assert tc.trace.final_answer != ""
 
     def test_filter_by_tags(self):
-        from cane_eval.swarm.suite import SwarmSuite
+        from sparse_eval.swarm.suite import SwarmSuite
         from pathlib import Path
 
         suite_path = Path(__file__).parent.parent / "examples" / "swarm_trace.yaml"
@@ -306,7 +306,7 @@ class TestSwarmSuite:
 
 class TestSwarmReliability:
     def test_basic_computation(self):
-        from cane_eval.swarm.reliability import compute_swarm_reliability
+        from sparse_eval.swarm.reliability import compute_swarm_reliability
 
         score, grade = compute_swarm_reliability(
             outcome_score=90,
@@ -316,7 +316,7 @@ class TestSwarmReliability:
         assert grade in ("A", "B")
 
     def test_all_four_pillars(self):
-        from cane_eval.swarm.reliability import compute_swarm_reliability
+        from sparse_eval.swarm.reliability import compute_swarm_reliability
 
         score, grade = compute_swarm_reliability(
             outcome_score=90,
@@ -328,7 +328,7 @@ class TestSwarmReliability:
         assert grade == "A"
 
     def test_failing_score(self):
-        from cane_eval.swarm.reliability import compute_swarm_reliability
+        from sparse_eval.swarm.reliability import compute_swarm_reliability
 
         score, grade = compute_swarm_reliability(
             outcome_score=20,
@@ -338,7 +338,7 @@ class TestSwarmReliability:
         assert grade == "F"
 
     def test_config_weights(self):
-        from cane_eval.swarm.reliability import (
+        from sparse_eval.swarm.reliability import (
             compute_swarm_reliability,
             SwarmReliabilityConfig,
         )
@@ -359,7 +359,7 @@ class TestSwarmReliability:
         assert score > 70
 
     def test_config_validation(self):
-        from cane_eval.swarm.reliability import SwarmReliabilityConfig
+        from sparse_eval.swarm.reliability import SwarmReliabilityConfig
 
         with pytest.raises(ValueError):
             SwarmReliabilityConfig(

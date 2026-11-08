@@ -4,7 +4,7 @@ import tempfile
 import os
 import pytest
 
-from cane_eval.suite import TestSuite, TestCase, Criterion, AgentTarget, DEFAULT_CRITERIA
+from sparse_eval.suite import TestSuite, TestCase, Criterion, AgentTarget, DEFAULT_CRITERIA
 
 
 SAMPLE_YAML = """

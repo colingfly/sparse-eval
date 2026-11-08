@@ -1,6 +1,6 @@
 """Tests for the criteria plugin system."""
 
-from cane_eval.criteria import (
+from sparse_eval.criteria import (
     CriterionType,
     EvalContext,
     CriterionPlugin,
@@ -12,8 +12,8 @@ from cane_eval.criteria import (
     HallucinationCriterion,
     default_registry,
 )
-from cane_eval.engine import SchemaResult
-from cane_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.engine import SchemaResult
+from sparse_eval.judge import JudgeResult, CriteriaScore
 
 
 # ---- CriterionType ----

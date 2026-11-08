@@ -109,7 +109,7 @@ class OpenAIProvider:
         except ImportError:
             raise ImportError(
                 "OpenAI provider requires the openai package. "
-                "Install it with: pip install cane-eval[openai]"
+                "Install it with: pip install sparse-eval[openai]"
             )
         self.model = model
         self._client = OpenAI(api_key=api_key) if api_key else OpenAI()
@@ -158,7 +158,7 @@ class GeminiProvider:
         except ImportError:
             raise ImportError(
                 "Gemini provider requires the google-genai package. "
-                "Install it with: pip install cane-eval[gemini]"
+                "Install it with: pip install sparse-eval[gemini]"
             )
         import os
         key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -217,7 +217,7 @@ class OpenAICompatibleProvider:
         except ImportError:
             raise ImportError(
                 "OpenAI-compatible provider requires the openai package. "
-                "Install it with: pip install cane-eval[openai]"
+                "Install it with: pip install sparse-eval[openai]"
             )
         if not base_url:
             raise ValueError(

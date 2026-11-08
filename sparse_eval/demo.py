@@ -1,21 +1,21 @@
 """
-demo.py -- Built-in demo for cane-eval.
+demo.py -- Built-in demo for sparse-eval.
 
 Runs a prebuilt agent against a bundled test suite to showcase
 eval scoring, failure detection, and root cause analysis.
 No setup required beyond an ANTHROPIC_API_KEY.
 
 Usage:
-    cane-eval demo
-    cane-eval demo --with-rca
+    sparse-eval demo
+    sparse-eval demo --with-rca
 """
 
 import os
 import sys
 import time
 
-from cane_eval.suite import TestSuite, TestCase, Criterion, AgentTarget
-from cane_eval.engine import EvalRunner
+from sparse_eval.suite import TestSuite, TestCase, Criterion, AgentTarget
+from sparse_eval.engine import EvalRunner
 
 
 # ---- Demo agent ----
@@ -163,7 +163,7 @@ def run_demo(with_rca: bool = False, verbose: bool = True):
         RunSummary from the eval run
     """
     print()
-    print(f"  {c('cane-eval demo', 'cyan')}")
+    print(f"  {c('sparse-eval demo', 'cyan')}")
     print(f"  {c('Running a deliberately flawed support agent against 5 test cases...', 'dim')}")
     print()
 
@@ -232,7 +232,7 @@ def run_demo(with_rca: bool = False, verbose: bool = True):
 
     if summary is None:
         # Fallback: build summary manually
-        from cane_eval.engine import RunSummary
+        from sparse_eval.engine import RunSummary
         duration = sum(r.response_time_ms for r in results) / 1000
         overall = round(sum(r.score for r in results) / len(results), 1) if results else 0
         summary = RunSummary(
@@ -292,7 +292,7 @@ def run_demo(with_rca: bool = False, verbose: bool = True):
         print(f"  {c('Running root cause analysis...', 'cyan')}")
         print()
 
-        from cane_eval.rca import RootCauseAnalyzer
+        from sparse_eval.rca import RootCauseAnalyzer
         analyzer = RootCauseAnalyzer(verbose=False)
         rca = analyzer.analyze(summary, max_score=70)
 
@@ -321,12 +321,12 @@ def run_demo(with_rca: bool = False, verbose: bool = True):
         print(f"    4. Root cause analysis identified patterns across failures")
     print()
     print(f"  {c('Next steps:', 'bold')}")
-    print(f"    {c('>', 'cyan')} Create your own suite:  {c('cane-eval validate my_tests.yaml', 'dim')}")
-    print(f"    {c('>', 'cyan')} Run against your agent: {c('cane-eval run my_tests.yaml', 'dim')}")
-    print(f"    {c('>', 'cyan')} Analyze failures:       {c('cane-eval rca my_tests.yaml', 'dim')}")
-    print(f"    {c('>', 'cyan')} Export training data:    {c('cane-eval run my_tests.yaml --export dpo', 'dim')}")
+    print(f"    {c('>', 'cyan')} Create your own suite:  {c('sparse-eval validate my_tests.yaml', 'dim')}")
+    print(f"    {c('>', 'cyan')} Run against your agent: {c('sparse-eval run my_tests.yaml', 'dim')}")
+    print(f"    {c('>', 'cyan')} Analyze failures:       {c('sparse-eval rca my_tests.yaml', 'dim')}")
+    print(f"    {c('>', 'cyan')} Export training data:    {c('sparse-eval run my_tests.yaml --export dpo', 'dim')}")
     print()
-    print(f"  Docs: {c('https://github.com/colingfly/cane-eval', 'cyan')}")
+    print(f"  Docs: {c('https://github.com/colingfly/sparse-eval', 'cyan')}")
     print()
 
     return summary

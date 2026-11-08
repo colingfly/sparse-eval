@@ -1,5 +1,5 @@
 """
-phlote.py -- Phlote.xyz integration for cane-eval.
+phlote.py -- Phlote.xyz integration for sparse-eval.
 
 Evaluate AI music agents, metadata/rights APIs, and adaptive music systems
 for reliability. Provides domain-specific criteria for music infrastructure:
@@ -7,7 +7,7 @@ rights clearance, metadata completeness, licensing validity, and contextual
 relevance.
 
 Usage:
-    from cane_eval.integrations.phlote import evaluate_phlote
+    from sparse_eval.integrations.phlote import evaluate_phlote
 
     results = evaluate_phlote(
         agent=my_music_agent,
@@ -26,9 +26,9 @@ import json
 from typing import Any, Optional, Union, Callable
 from pathlib import Path
 
-from cane_eval.engine import ReliabilityRunner, ReliabilitySummary
-from cane_eval.criteria import CriterionPlugin, CriterionType, EvalContext, CriteriaRegistry
-from cane_eval.integrations._base import _load_suite, _run_eval
+from sparse_eval.engine import ReliabilityRunner, ReliabilitySummary
+from sparse_eval.criteria import CriterionPlugin, CriterionType, EvalContext, CriteriaRegistry
+from sparse_eval.integrations._base import _load_suite, _run_eval
 
 
 # ---- Phlote-specific failure types ----
@@ -42,7 +42,7 @@ PHLOTE_FAILURE_TYPES = [
 
 def register_phlote_failure_types():
     """Register Phlote-specific failure types with the mining module."""
-    from cane_eval.mining import register_failure_type
+    from sparse_eval.mining import register_failure_type
     for ft in PHLOTE_FAILURE_TYPES:
         register_failure_type(ft)
 
@@ -253,9 +253,9 @@ def evaluate_phlote(
         rca: Run root cause analysis after eval.
         rca_threshold: Score threshold for RCA.
         register_criteria: Register Phlote domain criteria (default: True).
-        cloud: Cane Cloud URL.
-        cloud_api_key: API key for Cane Cloud.
-        environment_id: Environment ID on Cane Cloud.
+        cloud: Sparse Intelligence Cloud URL.
+        cloud_api_key: API key for Sparse Intelligence Cloud.
+        environment_id: Environment ID on Sparse Intelligence Cloud.
 
     Returns:
         ReliabilitySummary with all eval results.

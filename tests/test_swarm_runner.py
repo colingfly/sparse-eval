@@ -4,7 +4,7 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmAgent,
     SwarmTopology,
     SwarmTopologyType,
@@ -13,11 +13,11 @@ from cane_eval.swarm.models import (
     SwarmTrace,
     SwarmTestCase,
 )
-from cane_eval.swarm.runner import SwarmRunner, _parse_orchestrator_response
-from cane_eval.swarm.engine import SwarmReliabilityRunner
-from cane_eval.swarm.suite import SwarmSuite
-from cane_eval.suite import Criterion
-from cane_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.swarm.runner import SwarmRunner, _parse_orchestrator_response
+from sparse_eval.swarm.engine import SwarmReliabilityRunner
+from sparse_eval.swarm.suite import SwarmSuite
+from sparse_eval.suite import Criterion
+from sparse_eval.judge import JudgeResult, CriteriaScore
 
 
 # ---- Helpers ----
@@ -317,7 +317,7 @@ class TestSwarmRunnerCollaborative:
 # ---- Test full pipeline: SwarmRunner + SwarmReliabilityRunner ----
 
 class TestOrchestratedPipeline:
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_end_to_end_orchestrated(self, MockJudge):
         """Test the full orchestrated pipeline: execute -> judge -> summary."""
         mock_instance = MockJudge.return_value
@@ -370,7 +370,7 @@ class TestOrchestratedPipeline:
         assert summary.reliability_score is not None
         assert summary.reliability_grade in ("A", "B", "C", "D", "F")
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_orchestrated_with_concurrency(self, MockJudge):
         """Test orchestrated mode with concurrent execution."""
         mock_instance = MockJudge.return_value
@@ -403,7 +403,7 @@ class TestOrchestratedPipeline:
 
         assert summary.total == 2
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_mixed_mode_trace_and_orchestrated(self, MockJudge):
         """Test suite where some tests have pre-recorded traces and others don't."""
         mock_instance = MockJudge.return_value

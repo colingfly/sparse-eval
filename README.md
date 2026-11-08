@@ -1,11 +1,11 @@
-# cane-eval
+# sparse-eval
 
 AI system reliability infrastructure. Evaluate any AI system's reliability across correctness, structure, and performance.
 
-[![PyPI](https://img.shields.io/pypi/v/cane-eval)](https://pypi.org/project/cane-eval/)
+[![PyPI](https://img.shields.io/pypi/v/sparse-eval)](https://pypi.org/project/sparse-eval/)
 
 ```
-pip install cane-eval
+pip install sparse-eval
 ```
 
 ## What it does
@@ -30,7 +30,7 @@ Extensible reliability evaluation for AI systems — not just LLMs, but any AI a
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-cane-eval demo
+sparse-eval demo
 ```
 
 ## Quick Start
@@ -78,26 +78,26 @@ tests:
 **2. Run**:
 
 ```bash
-cane-eval run tests.yaml
+sparse-eval run tests.yaml
 ```
 
 **3. Production checks**:
 
 ```bash
 # Parallel execution
-cane-eval run tests.yaml -j 5
+sparse-eval run tests.yaml -j 5
 
 # Custom reliability weights (correctness:structural:performance)
-cane-eval run tests.yaml --reliability-weights 60:20:20
+sparse-eval run tests.yaml --reliability-weights 60:20:20
 
 # Validate responses against JSON schema
-cane-eval run tests.yaml --schema schema.json --fail-on-schema
+sparse-eval run tests.yaml --schema schema.json --fail-on-schema
 
 # Fail if p95 latency exceeds 10 seconds
-cane-eval run tests.yaml --latency-p95 10000
+sparse-eval run tests.yaml --latency-p95 10000
 
 # All together + mine failures into training data
-cane-eval run tests.yaml -j 5 --schema schema.json --latency-p95 10000 --mine --export dpo
+sparse-eval run tests.yaml -j 5 --schema schema.json --latency-p95 10000 --mine --export dpo
 ```
 
 ## Reliability Score
@@ -126,7 +126,7 @@ reliability:
 Build custom evaluation criteria for any domain:
 
 ```python
-from cane_eval import CriterionPlugin, CriterionType, EvalContext, CriteriaRegistry
+from sparse_eval import CriterionPlugin, CriterionType, EvalContext, CriteriaRegistry
 
 class ResponseTimeCriterion(CriterionPlugin):
     name = "response_time"
@@ -149,36 +149,36 @@ Built-in criteria: `SchemaValidityCriterion`, `LatencyPerformanceCriterion`, `Ac
 Any LLM as judge. Auto-detects provider from model name.
 
 ```bash
-cane-eval run tests.yaml                                                       # Claude (default)
-cane-eval run tests.yaml --provider openai --model gpt-4o                      # OpenAI
-cane-eval run tests.yaml --provider gemini --model gemini-2.0-flash            # Gemini
-cane-eval run tests.yaml --provider ollama --model llama3 --base-url http://localhost:11434/v1  # Local
+sparse-eval run tests.yaml                                                       # Claude (default)
+sparse-eval run tests.yaml --provider openai --model gpt-4o                      # OpenAI
+sparse-eval run tests.yaml --provider gemini --model gemini-2.0-flash            # Gemini
+sparse-eval run tests.yaml --provider ollama --model llama3 --base-url http://localhost:11434/v1  # Local
 ```
 
 ```bash
-pip install cane-eval[openai]          # OpenAI
-pip install cane-eval[gemini]          # Google Gemini
-pip install cane-eval[all-providers]   # everything
+pip install sparse-eval[openai]          # OpenAI
+pip install sparse-eval[gemini]          # Google Gemini
+pip install sparse-eval[all-providers]   # everything
 ```
 
 ## CLI
 
 ```bash
-cane-eval run tests.yaml                          # run eval
-cane-eval run tests.yaml -j 5                     # parallel (5 concurrent)
-cane-eval run tests.yaml --reliability-weights 60:20:20  # custom weights
-cane-eval run tests.yaml --schema schema.json     # + schema validation
-cane-eval run tests.yaml --latency-p95 10000      # + latency threshold
-cane-eval run tests.yaml --mine --export dpo      # + failure mining
-cane-eval rca tests.yaml --targeted               # root cause analysis
-cane-eval diff old.json new.json                  # regression diff
-cane-eval demo                                    # try it in 30 seconds
+sparse-eval run tests.yaml                          # run eval
+sparse-eval run tests.yaml -j 5                     # parallel (5 concurrent)
+sparse-eval run tests.yaml --reliability-weights 60:20:20  # custom weights
+sparse-eval run tests.yaml --schema schema.json     # + schema validation
+sparse-eval run tests.yaml --latency-p95 10000      # + latency threshold
+sparse-eval run tests.yaml --mine --export dpo      # + failure mining
+sparse-eval rca tests.yaml --targeted               # root cause analysis
+sparse-eval diff old.json new.json                  # regression diff
+sparse-eval demo                                    # try it in 30 seconds
 ```
 
 ## Python API
 
 ```python
-from cane_eval import ReliabilitySuite, ReliabilityRunner, ReliabilityConfig
+from sparse_eval import ReliabilitySuite, ReliabilityRunner, ReliabilityConfig
 
 suite = ReliabilitySuite.from_yaml("tests.yaml")
 runner = ReliabilityRunner(
@@ -204,7 +204,7 @@ Old names (`EvalRunner`, `TestSuite`, `TestCase`, `EvalResult`, `RunSummary`) st
 ## Framework Integrations
 
 ```python
-from cane_eval import evaluate_langchain, evaluate_llamaindex, evaluate_openai, evaluate_fastapi
+from sparse_eval import evaluate_langchain, evaluate_llamaindex, evaluate_openai, evaluate_fastapi
 
 results = evaluate_langchain(chain, suite="qa.yaml")
 results = evaluate_llamaindex(query_engine, suite="qa.yaml")
@@ -214,7 +214,7 @@ results = evaluate_fastapi("http://localhost:8000/ask", suite="qa.yaml")
 
 ## Behavioral Profiling
 
-For personality profiling, steering vectors, and DPO training pair generation, see [cane-personality](https://github.com/colingfly/cane-personality).
+For personality profiling, steering vectors, and DPO training pair generation, see [sparse-personality](https://github.com/colingfly/sparse-personality).
 
 ## Eval Targets
 
@@ -236,8 +236,8 @@ target:
 
 ```yaml
 # .github/workflows/eval.yml
-- run: pip install cane-eval
-- run: cane-eval run tests.yaml -j 5 --schema schema.json --latency-p95 10000 --quiet
+- run: pip install sparse-eval
+- run: sparse-eval run tests.yaml -j 5 --schema schema.json --latency-p95 10000 --quiet
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```

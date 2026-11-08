@@ -14,9 +14,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Callable, Generator
 
-from cane_eval.suite import ReliabilitySuite, ReliabilityCase, AgentTarget
-from cane_eval.judge import Judge, JudgeResult
-from cane_eval.reliability import ReliabilityConfig, compute_reliability
+from sparse_eval.suite import ReliabilitySuite, ReliabilityCase, AgentTarget
+from sparse_eval.judge import Judge, JudgeResult
+from sparse_eval.reliability import ReliabilityConfig, compute_reliability
 
 
 @dataclass
@@ -798,7 +798,7 @@ class ReliabilityRunner:
 
         # Check API key availability for the selected provider
         import os
-        from cane_eval.providers import PROVIDERS, PROVIDER_ALIASES
+        from sparse_eval.providers import PROVIDERS, PROVIDER_ALIASES
 
         resolved_provider = PROVIDER_ALIASES.get(provider.lower(), provider.lower())
         provider_cls = PROVIDERS.get(resolved_provider)

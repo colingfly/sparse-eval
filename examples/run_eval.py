@@ -6,7 +6,7 @@ Usage:
     python examples/run_eval.py
 """
 
-from cane_eval import TestSuite, EvalRunner, Exporter, FailureMiner
+from sparse_eval import TestSuite, EvalRunner, Exporter, FailureMiner
 
 
 # A simple dummy agent for demonstration.

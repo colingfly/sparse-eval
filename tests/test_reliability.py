@@ -2,7 +2,7 @@
 
 import pytest
 
-from cane_eval.reliability import ReliabilityConfig, compute_reliability
+from sparse_eval.reliability import ReliabilityConfig, compute_reliability
 
 
 # ---- ReliabilityConfig ----

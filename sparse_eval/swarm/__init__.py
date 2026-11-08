@@ -1,11 +1,11 @@
 """
-cane_eval.swarm -- Multi-agent orchestration evaluation.
+sparse_eval.swarm -- Multi-agent orchestration evaluation.
 
 Evaluate how well agents work together: routing, handoffs,
 context preservation, convergence, and final answer quality.
 """
 
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmTopologyType,
     SwarmMessageRole,
     SwarmAgent,
@@ -16,13 +16,13 @@ from cane_eval.swarm.models import (
     SwarmResult,
     SwarmSummary,
 )
-from cane_eval.swarm.suite import SwarmSuite
-from cane_eval.swarm.trace import parse_trace, load_trace_file
-from cane_eval.swarm.judge import SwarmJudge
-from cane_eval.swarm.engine import SwarmReliabilityRunner
-from cane_eval.swarm.runner import SwarmRunner
-from cane_eval.swarm.reliability import SwarmReliabilityConfig, compute_swarm_reliability
-from cane_eval.swarm.criteria import (
+from sparse_eval.swarm.suite import SwarmSuite
+from sparse_eval.swarm.trace import parse_trace, load_trace_file
+from sparse_eval.swarm.judge import SwarmJudge
+from sparse_eval.swarm.engine import SwarmReliabilityRunner
+from sparse_eval.swarm.runner import SwarmRunner
+from sparse_eval.swarm.reliability import SwarmReliabilityConfig, compute_swarm_reliability
+from sparse_eval.swarm.criteria import (
     SwarmEvalContext,
     RoutingCriterion,
     HandoffCriterion,

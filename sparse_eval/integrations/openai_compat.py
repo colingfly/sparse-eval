@@ -1,11 +1,11 @@
 """
-openai_compat.py -- OpenAI-compatible endpoint integration for cane-eval.
+openai_compat.py -- OpenAI-compatible endpoint integration for sparse-eval.
 
 Evaluate any OpenAI-compatible API endpoint (OpenAI, vLLM, Ollama, LiteLLM,
 LocalAI, text-generation-inference, etc.) with a single function call.
 
 Usage:
-    from cane_eval.integrations import evaluate_openai
+    from sparse_eval.integrations import evaluate_openai
 
     # OpenAI API
     results = evaluate_openai(
@@ -33,8 +33,8 @@ import urllib.request
 from typing import Any, Optional, Union, Callable
 from pathlib import Path
 
-from cane_eval.engine import RunSummary
-from cane_eval.integrations._base import _run_eval
+from sparse_eval.engine import RunSummary
+from sparse_eval.integrations._base import _run_eval
 
 
 def _adapt_openai_endpoint(
@@ -193,9 +193,9 @@ def evaluate_openai(
         mine_threshold: Score threshold for mining failures (default: 60).
         rca: Run root cause analysis after eval.
         rca_threshold: Score threshold for RCA (default: 60).
-        cloud: Cane Cloud URL to push results (e.g. "https://app.cane.dev").
-        cloud_api_key: API key for Cane Cloud.
-        environment_id: Environment ID on Cane Cloud.
+        cloud: Sparse Intelligence Cloud URL to push results (e.g. "https://app.sparseintelligence.ai").
+        cloud_api_key: API key for Sparse Intelligence Cloud.
+        environment_id: Environment ID on Sparse Intelligence Cloud.
 
     Returns:
         RunSummary with all eval results.

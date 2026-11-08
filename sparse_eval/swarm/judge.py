@@ -8,13 +8,13 @@ handoff, context preservation, convergence) using swarm-specific criteria.
 
 from typing import Optional
 
-from cane_eval.judge import Judge
-from cane_eval.swarm.models import (
+from sparse_eval.judge import Judge
+from sparse_eval.swarm.models import (
     SwarmTestCase,
     SwarmTrace,
     SwarmResult,
 )
-from cane_eval.swarm.criteria import (
+from sparse_eval.swarm.criteria import (
     SwarmEvalContext,
     RoutingCriterion,
     HandoffCriterion,

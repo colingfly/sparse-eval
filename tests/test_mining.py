@@ -2,7 +2,7 @@
 
 import json
 
-from cane_eval.mining import MinedExample, MiningResult, FAILURE_TYPES
+from sparse_eval.mining import MinedExample, MiningResult, FAILURE_TYPES
 
 
 def test_failure_types():

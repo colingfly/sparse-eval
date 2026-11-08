@@ -1,5 +1,5 @@
 """
-cane-eval -- AI system reliability infrastructure.
+sparse-eval -- AI system reliability infrastructure.
 
 Evaluate any AI system's reliability across correctness, structure, and performance.
 Extensible criteria, configurable weights, parallel execution, and domain integrations.
@@ -7,22 +7,22 @@ Extensible criteria, configurable weights, parallel execution, and domain integr
 
 __version__ = "1.0.0"
 
-from cane_eval.providers import get_provider, AnthropicProvider, OpenAIProvider, GeminiProvider, OpenAICompatibleProvider
-from cane_eval.suite import ReliabilitySuite, ReliabilityCase, TestSuite, TestCase
-from cane_eval.judge import Judge, JudgeResult, CriteriaScore
-from cane_eval.engine import (
+from sparse_eval.providers import get_provider, AnthropicProvider, OpenAIProvider, GeminiProvider, OpenAICompatibleProvider
+from sparse_eval.suite import ReliabilitySuite, ReliabilityCase, TestSuite, TestCase
+from sparse_eval.judge import Judge, JudgeResult, CriteriaScore
+from sparse_eval.engine import (
     ReliabilityRunner, ReliabilityResult, ReliabilitySummary,
     EvalRunner, EvalResult, RunSummary,
     LatencyStats, SchemaResult,
 )
-from cane_eval.export import Exporter
-from cane_eval.mining import FailureMiner
-from cane_eval.rca import RootCauseAnalyzer, RCAResult, TargetedRCAResult
-from cane_eval.criteria import CriterionPlugin, CriteriaRegistry, EvalContext, CriterionType
-from cane_eval.reliability import ReliabilityConfig
+from sparse_eval.export import Exporter
+from sparse_eval.mining import FailureMiner
+from sparse_eval.rca import RootCauseAnalyzer, RCAResult, TargetedRCAResult
+from sparse_eval.criteria import CriterionPlugin, CriteriaRegistry, EvalContext, CriterionType
+from sparse_eval.reliability import ReliabilityConfig
 
 # Integrations (lazy-loaded to avoid import errors if frameworks not installed)
-from cane_eval.integrations import (
+from sparse_eval.integrations import (
     evaluate_langchain,
     evaluate_llamaindex,
     evaluate_openai,
@@ -31,7 +31,7 @@ from cane_eval.integrations import (
 )
 
 # Swarm (multi-agent evaluation)
-from cane_eval.swarm import (
+from sparse_eval.swarm import (
     SwarmSuite,
     SwarmReliabilityRunner,
     SwarmJudge,

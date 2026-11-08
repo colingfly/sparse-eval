@@ -2,7 +2,7 @@
 
 import json
 
-from cane_eval.integrations.phlote import (
+from sparse_eval.integrations.phlote import (
     RightsClearanceCriterion,
     MetadataCompletenessCriterion,
     LicensingValidityCriterion,
@@ -11,8 +11,8 @@ from cane_eval.integrations.phlote import (
     register_phlote_failure_types,
     PHLOTE_FAILURE_TYPES,
 )
-from cane_eval.criteria import EvalContext, CriterionType
-from cane_eval.judge import JudgeResult
+from sparse_eval.criteria import EvalContext, CriterionType
+from sparse_eval.judge import JudgeResult
 
 
 # ---- Phlote failure types ----
@@ -25,7 +25,7 @@ def test_phlote_failure_types():
 
 def test_register_phlote_failure_types():
     register_phlote_failure_types()
-    from cane_eval.mining import FAILURE_TYPES
+    from sparse_eval.mining import FAILURE_TYPES
     assert "rights_violation" in FAILURE_TYPES
     assert "metadata_missing" in FAILURE_TYPES
     assert "licensing_error" in FAILURE_TYPES

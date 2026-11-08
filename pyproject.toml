@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "cane-eval"
+name = "sparse-eval"
 version = "1.0.0"
 description = "AI system reliability infrastructure. Evaluate any AI system's reliability across correctness, structure, and performance."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "Cane" },
+    { name = "Sparse Intelligence" },
 ]
 keywords = ["llm", "eval", "evaluation", "ai-agents", "dpo", "training-data", "judge", "reliability", "schema-validation", "latency", "ai-reliability", "personality-profiling", "steering-vectors", "embedding-analysis"]
 classifiers = [
@@ -66,16 +66,16 @@ dev = [
 ]
 
 [project.scripts]
-cane-eval = "cane_eval.cli:main"
+sparse-eval = "sparse_eval.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/colingfly/cane-eval"
-Documentation = "https://github.com/colingfly/cane-eval#readme"
-Repository = "https://github.com/colingfly/cane-eval"
-Issues = "https://github.com/colingfly/cane-eval/issues"
+Homepage = "https://github.com/colingfly/sparse-eval"
+Documentation = "https://github.com/colingfly/sparse-eval#readme"
+Repository = "https://github.com/colingfly/sparse-eval"
+Issues = "https://github.com/colingfly/sparse-eval/issues"
 
 [tool.hatch.build]
-include = ["cane_eval/**", "examples/**"]
+include = ["sparse_eval/**", "examples/**"]
 
 [tool.ruff]
 line-length = 120

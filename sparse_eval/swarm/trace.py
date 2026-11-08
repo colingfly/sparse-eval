@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from cane_eval.swarm.models import SwarmTrace, SwarmMessage, SwarmMessageRole
+from sparse_eval.swarm.models import SwarmTrace, SwarmMessage, SwarmMessageRole
 
 
 # Map string role names to enum values

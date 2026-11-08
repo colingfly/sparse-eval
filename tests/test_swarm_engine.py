@@ -2,22 +2,22 @@
 
 import pytest
 from unittest.mock import patch, MagicMock
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmMessage,
     SwarmMessageRole,
     SwarmTrace,
     SwarmTestCase,
     SwarmResult,
 )
-from cane_eval.swarm.suite import SwarmSuite
-from cane_eval.swarm.engine import SwarmReliabilityRunner
-from cane_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.swarm.suite import SwarmSuite
+from sparse_eval.swarm.engine import SwarmReliabilityRunner
+from sparse_eval.judge import JudgeResult, CriteriaScore
 
 
 def _make_suite_with_traces():
     """Create a minimal SwarmSuite with inline traces for testing."""
-    from cane_eval.swarm.models import SwarmAgent, SwarmTopology, SwarmTopologyType
-    from cane_eval.suite import Criterion
+    from sparse_eval.swarm.models import SwarmAgent, SwarmTopology, SwarmTopologyType
+    from sparse_eval.suite import Criterion
 
     topology = SwarmTopology(
         type=SwarmTopologyType.ORCHESTRATOR,
@@ -98,7 +98,7 @@ def _mock_judge_score(**kwargs):
 
 class TestSwarmReliabilityRunner:
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_run_sequential(self, MockJudge):
         """Test basic sequential swarm eval run."""
         mock_instance = MockJudge.return_value
@@ -115,7 +115,7 @@ class TestSwarmReliabilityRunner:
         assert summary.reliability_score is not None
         assert summary.reliability_grade in ("A", "B", "C", "D", "F")
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_run_with_tags(self, MockJudge):
         """Test tag filtering."""
         mock_instance = MockJudge.return_value
@@ -128,7 +128,7 @@ class TestSwarmReliabilityRunner:
         assert summary.total == 1
         assert summary.results[0].test_case.question == "What is my refund status?"
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_run_empty_suite(self, MockJudge):
         """Test with no matching tests."""
         suite = _make_suite_with_traces()
@@ -138,7 +138,7 @@ class TestSwarmReliabilityRunner:
         assert summary.total == 0
         assert summary.results == []
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_per_agent_summary(self, MockJudge):
         """Test that per-agent summary is computed."""
         mock_instance = MockJudge.return_value
@@ -152,7 +152,7 @@ class TestSwarmReliabilityRunner:
         assert "billing" in summary.per_agent_summary
         assert summary.per_agent_summary["router"]["role"] == "Router"
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_on_result_callback(self, MockJudge):
         """Test that on_result callback is called."""
         mock_instance = MockJudge.return_value
@@ -170,7 +170,7 @@ class TestSwarmReliabilityRunner:
         assert results_received[0][1] == 1  # index
         assert results_received[0][2] == 2  # total
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_summary_to_dict(self, MockJudge):
         """Test that summary serializes to dict."""
         mock_instance = MockJudge.return_value
@@ -187,7 +187,7 @@ class TestSwarmReliabilityRunner:
         assert "per_agent_summary" in d
         assert "reliability_score" in d
 
-    @patch("cane_eval.swarm.judge.Judge")
+    @patch("sparse_eval.swarm.judge.Judge")
     def test_run_async(self, MockJudge):
         """Test async concurrent run."""
         mock_instance = MockJudge.return_value

@@ -1,5 +1,5 @@
 """
-llamaindex.py -- LlamaIndex integration for cane-eval.
+llamaindex.py -- LlamaIndex integration for sparse-eval.
 
 Evaluate any LlamaIndex query engine, chat engine, or agent with a single call.
 
@@ -9,7 +9,7 @@ Usage:
     index = VectorStoreIndex.from_documents(documents)
     query_engine = index.as_query_engine()
 
-    from cane_eval.integrations import evaluate_llamaindex
+    from sparse_eval.integrations import evaluate_llamaindex
     results = evaluate_llamaindex(query_engine, suite="qa.yaml")
 
     # Chat engine
@@ -20,8 +20,8 @@ Usage:
 from typing import Any, Optional, Union, Callable
 from pathlib import Path
 
-from cane_eval.engine import RunSummary
-from cane_eval.integrations._base import _run_eval
+from sparse_eval.engine import RunSummary
+from sparse_eval.integrations._base import _run_eval
 
 
 def _adapt_llamaindex_engine(engine: Any) -> Callable[[str], str]:
@@ -89,9 +89,9 @@ def evaluate_llamaindex(
         mine_threshold: Score threshold for mining failures (default: 60).
         rca: Run root cause analysis after eval.
         rca_threshold: Score threshold for RCA (default: 60).
-        cloud: Cane Cloud URL to push results (e.g. "https://app.cane.dev").
-        cloud_api_key: API key for Cane Cloud.
-        environment_id: Environment ID on Cane Cloud.
+        cloud: Sparse Intelligence Cloud URL to push results (e.g. "https://app.sparseintelligence.ai").
+        cloud_api_key: API key for Sparse Intelligence Cloud.
+        environment_id: Environment ID on Sparse Intelligence Cloud.
 
     Returns:
         RunSummary with all eval results.

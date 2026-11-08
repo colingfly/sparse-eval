@@ -14,15 +14,15 @@ import time
 from datetime import datetime
 from typing import Optional, Callable
 
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmTestCase,
     SwarmTrace,
     SwarmResult,
     SwarmSummary,
 )
-from cane_eval.swarm.suite import SwarmSuite
-from cane_eval.swarm.judge import SwarmJudge
-from cane_eval.swarm.reliability import SwarmReliabilityConfig, compute_swarm_reliability
+from sparse_eval.swarm.suite import SwarmSuite
+from sparse_eval.swarm.judge import SwarmJudge
+from sparse_eval.swarm.reliability import SwarmReliabilityConfig, compute_swarm_reliability
 
 
 class SwarmReliabilityRunner:
@@ -125,7 +125,7 @@ class SwarmReliabilityRunner:
         # Create SwarmRunner for orchestrated mode
         swarm_runner = None
         if suite.mode == "swarm":
-            from cane_eval.swarm.runner import SwarmRunner
+            from sparse_eval.swarm.runner import SwarmRunner
             swarm_runner = SwarmRunner(
                 topology=suite.topology,
                 agent_callables=agent_callables or {},
@@ -213,7 +213,7 @@ class SwarmReliabilityRunner:
         # Create SwarmRunner for orchestrated mode
         swarm_runner = None
         if suite.mode == "swarm":
-            from cane_eval.swarm.runner import SwarmRunner
+            from sparse_eval.swarm.runner import SwarmRunner
             swarm_runner = SwarmRunner(
                 topology=suite.topology,
                 agent_callables=agent_callables or {},

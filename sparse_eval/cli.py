@@ -1,14 +1,14 @@
 """
-cli.py -- Command-line interface for cane-eval.
+cli.py -- Command-line interface for sparse-eval.
 
 Usage:
-    cane-eval run tests.yaml
-    cane-eval run tests.yaml --model claude-sonnet-4-5-20250929
-    cane-eval run tests.yaml --tags policy,returns
-    cane-eval run tests.yaml --export dpo --output training.jsonl
-    cane-eval run tests.yaml --mine --mine-threshold 60
-    cane-eval run tests.yaml -j 5 --reliability-weights 60:20:20
-    cane-eval diff results_v1.json results_v2.json
+    sparse-eval run tests.yaml
+    sparse-eval run tests.yaml --model claude-sonnet-4-5-20250929
+    sparse-eval run tests.yaml --tags policy,returns
+    sparse-eval run tests.yaml --export dpo --output training.jsonl
+    sparse-eval run tests.yaml --mine --mine-threshold 60
+    sparse-eval run tests.yaml -j 5 --reliability-weights 60:20:20
+    sparse-eval diff results_v1.json results_v2.json
 """
 
 import argparse
@@ -351,7 +351,7 @@ def print_targeted_rca_result(targeted):
 
 def _parse_reliability_weights(weights_str: str):
     """Parse reliability weights from 'C:S:P' format (e.g. '60:20:20')."""
-    from cane_eval.reliability import ReliabilityConfig
+    from sparse_eval.reliability import ReliabilityConfig
 
     parts = weights_str.split(":")
     if len(parts) != 3:
@@ -374,9 +374,9 @@ def _parse_reliability_weights(weights_str: str):
 
 def cmd_run(args):
     """Run eval suite."""
-    from cane_eval.suite import ReliabilitySuite
-    from cane_eval.engine import ReliabilityRunner
-    from cane_eval.export import Exporter
+    from sparse_eval.suite import ReliabilitySuite
+    from sparse_eval.engine import ReliabilityRunner
+    from sparse_eval.export import Exporter
 
     # Load suite
     try:
@@ -393,7 +393,7 @@ def cmd_run(args):
         suite.model = args.model
 
     print()
-    print(f"  {c('cane-eval', 'cyan')} {c(suite.name, 'bold')}")
+    print(f"  {c('sparse-eval', 'cyan')} {c(suite.name, 'bold')}")
     print(f"  {len(suite.tests)} test cases | model: {suite.model}")
     print()
 
@@ -405,7 +405,7 @@ def cmd_run(args):
     base_url = getattr(args, "base_url", None)
 
     # Pick the right API key env var for the provider
-    from cane_eval.providers import PROVIDERS, PROVIDER_ALIASES
+    from sparse_eval.providers import PROVIDERS, PROVIDER_ALIASES
     resolved = PROVIDER_ALIASES.get(provider.lower(), provider.lower())
     provider_cls = PROVIDERS.get(resolved)
     env_key = provider_cls.env_key() if provider_cls else "ANTHROPIC_API_KEY"
@@ -473,7 +473,7 @@ def cmd_run(args):
 
     # Mine failures
     if args.mine:
-        from cane_eval.mining import FailureMiner
+        from sparse_eval.mining import FailureMiner
 
         miner = FailureMiner(
             api_key=args.api_key or os.environ.get(env_key),
@@ -535,9 +535,9 @@ def cmd_diff(args):
 
 def cmd_rca(args):
     """Run root cause analysis on eval failures."""
-    from cane_eval.suite import ReliabilitySuite
-    from cane_eval.engine import ReliabilityRunner
-    from cane_eval.rca import RootCauseAnalyzer
+    from sparse_eval.suite import ReliabilitySuite
+    from sparse_eval.engine import ReliabilityRunner
+    from sparse_eval.rca import RootCauseAnalyzer
 
     # Load suite
     try:
@@ -554,7 +554,7 @@ def cmd_rca(args):
         suite.model = args.model
 
     print()
-    print(f"  {c('cane-eval rca', 'cyan')} {c(suite.name, 'bold')}")
+    print(f"  {c('sparse-eval rca', 'cyan')} {c(suite.name, 'bold')}")
     print(f"  {len(suite.tests)} test cases | model: {suite.model}")
     print()
 
@@ -570,8 +570,8 @@ def cmd_rca(args):
             print(c(f"  Error: Results file not found: {args.results}", "red"))
             sys.exit(1)
 
-        from cane_eval.engine import ReliabilityResult
-        from cane_eval.judge import JudgeResult, CriteriaScore
+        from sparse_eval.engine import ReliabilityResult
+        from sparse_eval.judge import JudgeResult, CriteriaScore
 
         results_list = data.get("results", data if isinstance(data, list) else [])
         eval_results = []
@@ -593,7 +593,7 @@ def cmd_rca(args):
                 tags=r.get("tags", []),
             ))
 
-        from cane_eval.engine import ReliabilitySummary
+        from sparse_eval.engine import ReliabilitySummary
         summary = ReliabilitySummary(
             suite_name=data.get("suite_name", "loaded"),
             total=len(eval_results),
@@ -608,7 +608,7 @@ def cmd_rca(args):
         provider = getattr(args, "provider", "anthropic") or "anthropic"
         base_url = getattr(args, "base_url", None)
 
-        from cane_eval.providers import PROVIDERS, PROVIDER_ALIASES
+        from sparse_eval.providers import PROVIDERS, PROVIDER_ALIASES
         resolved = PROVIDER_ALIASES.get(provider.lower(), provider.lower())
         provider_cls = PROVIDERS.get(resolved)
         env_key = provider_cls.env_key() if provider_cls else "ANTHROPIC_API_KEY"
@@ -631,7 +631,7 @@ def cmd_rca(args):
     provider = getattr(args, "provider", "anthropic") or "anthropic"
     base_url = getattr(args, "base_url", None)
 
-    from cane_eval.providers import PROVIDERS as _P, PROVIDER_ALIASES as _PA
+    from sparse_eval.providers import PROVIDERS as _P, PROVIDER_ALIASES as _PA
     _resolved = _PA.get(provider.lower(), provider.lower())
     _pcls = _P.get(_resolved)
     _env_key = _pcls.env_key() if _pcls else "ANTHROPIC_API_KEY"
@@ -687,14 +687,14 @@ def cmd_rca(args):
 
 def cmd_demo(args):
     """Run built-in demo."""
-    from cane_eval.demo import run_demo
+    from sparse_eval.demo import run_demo
     run_demo(with_rca=args.with_rca, verbose=True)
 
 
 def cmd_preflight(args):
     """Run pre-flight checks on a test suite."""
-    from cane_eval.suite import ReliabilitySuite
-    from cane_eval.engine import ReliabilityRunner
+    from sparse_eval.suite import ReliabilitySuite
+    from sparse_eval.engine import ReliabilityRunner
 
     try:
         suite = ReliabilitySuite.from_yaml(args.suite)
@@ -706,7 +706,7 @@ def cmd_preflight(args):
         sys.exit(1)
 
     print()
-    print(f"  {c('cane-eval preflight', 'cyan')} {c(suite.name, 'bold')}")
+    print(f"  {c('sparse-eval preflight', 'cyan')} {c(suite.name, 'bold')}")
     print()
 
     result = ReliabilityRunner.preflight(suite, timeout=args.timeout, verbose=True)
@@ -797,8 +797,8 @@ def print_swarm_summary(summary):
 
 def cmd_swarm(args):
     """Run swarm (multi-agent) eval suite."""
-    from cane_eval.swarm.suite import SwarmSuite
-    from cane_eval.swarm.engine import SwarmReliabilityRunner
+    from sparse_eval.swarm.suite import SwarmSuite
+    from sparse_eval.swarm.engine import SwarmReliabilityRunner
 
     # Load suite
     try:
@@ -816,7 +816,7 @@ def cmd_swarm(args):
 
     topo = suite.topology
     print()
-    print(f"  {c('cane-eval swarm', 'cyan')} {c(suite.name, 'bold')}")
+    print(f"  {c('sparse-eval swarm', 'cyan')} {c(suite.name, 'bold')}")
     print(f"  {len(suite.tests)} scenarios | {topo.type.value} topology | {len(topo.agents)} agents | model: {suite.model}")
     print()
 
@@ -827,7 +827,7 @@ def cmd_swarm(args):
     provider = getattr(args, "provider", "anthropic") or "anthropic"
     base_url = getattr(args, "base_url", None)
 
-    from cane_eval.providers import PROVIDERS, PROVIDER_ALIASES
+    from sparse_eval.providers import PROVIDERS, PROVIDER_ALIASES
     resolved = PROVIDER_ALIASES.get(provider.lower(), provider.lower())
     provider_cls = PROVIDERS.get(resolved)
     env_key = provider_cls.env_key() if provider_cls else "ANTHROPIC_API_KEY"
@@ -867,7 +867,7 @@ def cmd_swarm(args):
 
 def cmd_validate(args):
     """Validate a test suite YAML file."""
-    from cane_eval.suite import ReliabilitySuite
+    from sparse_eval.suite import ReliabilitySuite
 
     try:
         suite = ReliabilitySuite.from_yaml(args.suite)
@@ -886,7 +886,7 @@ def cmd_validate(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="cane-eval",
+        prog="sparse-eval",
         description="AI system reliability infrastructure",
     )
     parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")

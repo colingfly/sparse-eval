@@ -5,7 +5,7 @@ All integrations follow the same pattern:
 1. Adapt the framework's agent into a callable(str) -> str
 2. Load the test suite from YAML or dict
 3. Run eval via EvalRunner
-4. Optionally run mining, RCA, or push to Cane Cloud
+4. Optionally run mining, RCA, or push to Sparse Intelligence Cloud
 5. Return RunSummary
 """
 
@@ -13,8 +13,8 @@ import os
 from pathlib import Path
 from typing import Optional, Callable, Union
 
-from cane_eval.suite import TestSuite
-from cane_eval.engine import EvalRunner, RunSummary
+from sparse_eval.suite import TestSuite
+from sparse_eval.engine import EvalRunner, RunSummary
 
 
 def _load_suite(suite: Union[str, Path, dict, TestSuite]) -> TestSuite:
@@ -55,9 +55,9 @@ def _run_eval(
         mine_threshold: Score threshold for mining failures.
         rca: Run root cause analysis after eval.
         rca_threshold: Score threshold for RCA.
-        cloud: Cane Cloud URL to push results to (e.g. "https://app.cane.dev").
-        cloud_api_key: API key for Cane Cloud.
-        environment_id: Environment ID for Cane Cloud.
+        cloud: Sparse Intelligence Cloud URL to push results to (e.g. "https://app.sparseintelligence.ai").
+        cloud_api_key: API key for Sparse Intelligence Cloud.
+        environment_id: Environment ID for Sparse Intelligence Cloud.
 
     Returns:
         RunSummary with all results, plus .mining_result and .rca_result
@@ -76,7 +76,7 @@ def _run_eval(
 
     # Optional: failure mining
     if mine and summary.failed > 0:
-        from cane_eval.mining import FailureMiner
+        from sparse_eval.mining import FailureMiner
         miner = FailureMiner(
             api_key=anthropic_key,
             model=model or loaded_suite.model,
@@ -87,7 +87,7 @@ def _run_eval(
 
     # Optional: root cause analysis
     if rca and summary.failed > 0:
-        from cane_eval.rca import RootCauseAnalyzer
+        from sparse_eval.rca import RootCauseAnalyzer
         analyzer = RootCauseAnalyzer(
             api_key=anthropic_key,
             model=model or loaded_suite.model,
@@ -96,7 +96,7 @@ def _run_eval(
         rca_result = analyzer.analyze(summary, max_score=rca_threshold)
         summary.rca_result = rca_result  # type: ignore[attr-defined]
 
-    # Optional: push to Cane Cloud
+    # Optional: push to Sparse Intelligence Cloud
     if cloud and cloud_api_key and environment_id:
         _push_to_cloud(summary, cloud, cloud_api_key, environment_id, verbose)
 
@@ -110,7 +110,7 @@ def _push_to_cloud(
     environment_id: str,
     verbose: bool = True,
 ) -> None:
-    """Push eval results to Cane Cloud platform."""
+    """Push eval results to Sparse Intelligence Cloud platform."""
     import json
     import urllib.request
 
@@ -137,7 +137,7 @@ def _push_to_cloud(
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             if verbose:
-                print(f"  Results pushed to Cane Cloud ({resp.status})")
+                print(f"  Results pushed to Sparse Intelligence Cloud ({resp.status})")
     except Exception as e:
         if verbose:
-            print(f"  Warning: Failed to push to Cane Cloud: {e}")
+            print(f"  Warning: Failed to push to Sparse Intelligence Cloud: {e}")

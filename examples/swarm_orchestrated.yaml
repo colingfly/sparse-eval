@@ -1,5 +1,5 @@
 name: Customer Support Swarm (Orchestrated)
-description: Multi-agent support system — cane-eval executes the swarm and captures traces
+description: Multi-agent support system — sparse-eval executes the swarm and captures traces
 mode: swarm
 model: claude-sonnet-4-5-20250929
 

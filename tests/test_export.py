@@ -4,9 +4,9 @@ import json
 import tempfile
 import os
 
-from cane_eval.engine import EvalResult, RunSummary
-from cane_eval.judge import JudgeResult, CriteriaScore
-from cane_eval.export import Exporter
+from sparse_eval.engine import EvalResult, RunSummary
+from sparse_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.export import Exporter
 
 
 def _make_result(question, score, status, expected="expected", agent="agent"):
@@ -68,7 +68,7 @@ def test_sft_export():
     assert len(examples) == 1
     assert examples[0]["prompt"] == "Q1"
     assert examples[0]["completion"] == "expected"
-    assert examples[0]["metadata"]["source"] == "cane-eval"
+    assert examples[0]["metadata"]["source"] == "sparse-eval"
 
 
 def test_openai_export():

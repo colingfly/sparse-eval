@@ -2,7 +2,7 @@
 
 import pytest
 
-from cane_eval.judge import Judge, JudgeResult, CriteriaScore
+from sparse_eval.judge import Judge, JudgeResult, CriteriaScore
 
 
 def test_classify_pass():

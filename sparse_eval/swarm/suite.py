@@ -13,14 +13,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmAgent,
     SwarmTopology,
     SwarmTopologyType,
     SwarmTestCase,
 )
-from cane_eval.swarm.trace import parse_trace, load_trace_file
-from cane_eval.suite import Criterion, DEFAULT_CRITERIA
+from sparse_eval.swarm.trace import parse_trace, load_trace_file
+from sparse_eval.suite import Criterion, DEFAULT_CRITERIA
 
 
 DEFAULT_SWARM_CRITERIA = [
@@ -223,7 +223,7 @@ class SwarmSuite:
         """Parse reliability config dict into SwarmReliabilityConfig, or None."""
         if not self.reliability_config:
             return None
-        from cane_eval.swarm.reliability import SwarmReliabilityConfig
+        from sparse_eval.swarm.reliability import SwarmReliabilityConfig
         return SwarmReliabilityConfig(
             outcome_weight=self.reliability_config.get("outcome_weight", 0.35),
             process_weight=self.reliability_config.get("process_weight", 0.35),

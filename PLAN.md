@@ -1,4 +1,4 @@
-# cane-eval Roadmap: Agent Reliability Layer
+# sparse-eval Roadmap: Agent Reliability Layer
 
 ## The Shift
 From: "does the answer look good?"
@@ -24,7 +24,7 @@ Compute p50, p95, p99, max from all `response_time_ms` values in the run.
 
 ### 1b. Latency threshold flag
 ```bash
-cane-eval run tests.yaml --latency-p95 10000
+sparse-eval run tests.yaml --latency-p95 10000
 ```
 If p95 exceeds threshold (in ms), the run fails (exit code 1).
 Print: `FAIL: p95 latency 12100ms exceeds threshold 10000ms`
@@ -44,7 +44,7 @@ Print: `FAIL: p95 latency 12100ms exceeds threshold 10000ms`
 
 ### 2a. --schema flag
 ```bash
-cane-eval run tests.yaml --schema schema.json
+sparse-eval run tests.yaml --schema schema.json
 ```
 
 Load a JSON Schema file. After getting each agent response, attempt `json.loads()`
@@ -166,7 +166,7 @@ Agent Reliability Score: 71 (B)
 
 ### 4c. CI badge output
 ```bash
-cane-eval run tests.yaml --badge reliability-badge.svg
+sparse-eval run tests.yaml --badge reliability-badge.svg
 ```
 
 Generate an SVG badge: "Agent Reliability: B | 71"

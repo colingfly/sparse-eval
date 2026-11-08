@@ -1,7 +1,7 @@
 """Tests for the engine module (unit tests that don't call the API)."""
 
-from cane_eval.engine import _extract_by_path, EvalResult, RunSummary
-from cane_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.engine import _extract_by_path, EvalResult, RunSummary
+from sparse_eval.judge import JudgeResult, CriteriaScore
 
 
 def test_extract_by_path_simple():

@@ -13,7 +13,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Optional
 
-from cane_eval.engine import RunSummary, EvalResult
+from sparse_eval.engine import RunSummary, EvalResult
 
 
 # ---- Failure types ----
@@ -154,7 +154,7 @@ class FailureMiner:
         provider: str = "anthropic",
         base_url: Optional[str] = None,
     ):
-        from cane_eval.providers import get_provider, detect_provider_from_model
+        from sparse_eval.providers import get_provider, detect_provider_from_model
 
         self.verbose = verbose
 

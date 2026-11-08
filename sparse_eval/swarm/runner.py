@@ -15,7 +15,7 @@ import subprocess
 import urllib.request
 from typing import Optional, Callable
 
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmAgent,
     SwarmTopology,
     SwarmTopologyType,

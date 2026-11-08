@@ -8,7 +8,7 @@ DPO, SFT, OpenAI fine-tune, and raw JSON.
 import json
 from typing import Optional
 
-from cane_eval.engine import RunSummary, EvalResult
+from sparse_eval.engine import RunSummary, EvalResult
 
 
 class Exporter:
@@ -146,7 +146,7 @@ class Exporter:
                 "metadata": {
                     "score": r.score,
                     "status": r.status,
-                    "source": "cane-eval",
+                    "source": "sparse-eval",
                     "judge_reasoning": r.judge_result.overall_reasoning,
                 },
             })

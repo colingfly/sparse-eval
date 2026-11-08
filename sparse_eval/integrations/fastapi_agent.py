@@ -1,12 +1,12 @@
 """
-fastapi_agent.py -- FastAPI agent integration for cane-eval.
+fastapi_agent.py -- FastAPI agent integration for sparse-eval.
 
 Evaluate any FastAPI-based agent by pointing at its endpoint, or test it
 in-process using the TestClient (no server needed).
 
 Usage:
     # Option 1: Running server
-    from cane_eval.integrations import evaluate_fastapi
+    from sparse_eval.integrations import evaluate_fastapi
     results = evaluate_fastapi(
         "http://localhost:8000/ask",
         suite="qa.yaml",
@@ -36,8 +36,8 @@ import urllib.request
 from typing import Any, Optional, Union, Callable
 from pathlib import Path
 
-from cane_eval.engine import RunSummary
-from cane_eval.integrations._base import _run_eval
+from sparse_eval.engine import RunSummary
+from sparse_eval.integrations._base import _run_eval
 
 
 def _extract_by_path(data: Any, path: str) -> str:
@@ -164,9 +164,9 @@ def evaluate_fastapi(
         mine_threshold: Score threshold for mining failures (default: 60).
         rca: Run root cause analysis after eval.
         rca_threshold: Score threshold for RCA (default: 60).
-        cloud: Cane Cloud URL to push results (e.g. "https://app.cane.dev").
-        cloud_api_key: API key for Cane Cloud.
-        environment_id: Environment ID on Cane Cloud.
+        cloud: Sparse Intelligence Cloud URL to push results (e.g. "https://app.sparseintelligence.ai").
+        cloud_api_key: API key for Sparse Intelligence Cloud.
+        environment_id: Environment ID on Sparse Intelligence Cloud.
 
     Returns:
         RunSummary with all eval results.

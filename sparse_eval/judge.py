@@ -100,7 +100,7 @@ class Judge:
         provider: str = "anthropic",
         base_url: Optional[str] = None,
     ):
-        from cane_eval.providers import get_provider, detect_provider_from_model
+        from sparse_eval.providers import get_provider, detect_provider_from_model
 
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -252,7 +252,7 @@ Return this exact JSON structure:
             JudgeResult with criteria scores, overall score, and pass/warn/fail status
         """
         if criteria is None:
-            from cane_eval.suite import DEFAULT_CRITERIA
+            from sparse_eval.suite import DEFAULT_CRITERIA
             criteria = [c.to_dict() for c in DEFAULT_CRITERIA]
 
         prompt = self._build_prompt(

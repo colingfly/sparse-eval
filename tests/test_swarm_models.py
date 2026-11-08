@@ -1,7 +1,7 @@
 """Tests for swarm data model."""
 
 import pytest
-from cane_eval.swarm.models import (
+from sparse_eval.swarm.models import (
     SwarmTopologyType,
     SwarmMessageRole,
     SwarmAgent,

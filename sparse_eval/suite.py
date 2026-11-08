@@ -280,7 +280,7 @@ class ReliabilitySuite:
         """Parse reliability config dict into ReliabilityConfig, or None."""
         if not self.reliability_config:
             return None
-        from cane_eval.reliability import ReliabilityConfig
+        from sparse_eval.reliability import ReliabilityConfig
         return ReliabilityConfig(
             correctness_weight=self.reliability_config.get("correctness_weight", 0.50),
             structural_weight=self.reliability_config.get("structural_weight", 0.25),

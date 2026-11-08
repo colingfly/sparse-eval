@@ -4,9 +4,9 @@ import asyncio
 import time
 from unittest.mock import MagicMock, patch
 
-from cane_eval.engine import ReliabilityRunner, ReliabilityResult, ReliabilitySummary
-from cane_eval.suite import ReliabilitySuite, ReliabilityCase
-from cane_eval.judge import JudgeResult, CriteriaScore
+from sparse_eval.engine import ReliabilityRunner, ReliabilityResult, ReliabilitySummary
+from sparse_eval.suite import ReliabilitySuite, ReliabilityCase
+from sparse_eval.judge import JudgeResult, CriteriaScore
 
 
 def _make_suite(n_tests=5):
@@ -55,7 +55,7 @@ def test_run_async_basic():
     """run_async() returns a valid summary."""
     suite = _make_suite(3)
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         runner = ReliabilityRunner(api_key="test-key", verbose=False)
@@ -71,7 +71,7 @@ def test_run_async_preserves_order():
     """Results maintain the same order as test cases."""
     suite = _make_suite(5)
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         runner = ReliabilityRunner(api_key="test-key", verbose=False)
@@ -85,7 +85,7 @@ def test_run_async_concurrency_faster():
     """Concurrent execution is faster than sequential for slow agents."""
     suite = _make_suite(5)
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         # Sequential
@@ -108,7 +108,7 @@ def test_run_with_concurrency():
     """run() with concurrency > 1 still works (calls run_async internally)."""
     suite = _make_suite(3)
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         runner = ReliabilityRunner(api_key="test-key", verbose=False, concurrency=3)
@@ -121,7 +121,7 @@ def test_run_sequential_default():
     """run() with default concurrency=1 runs sequentially."""
     suite = _make_suite(3)
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         runner = ReliabilityRunner(api_key="test-key", verbose=False)
@@ -138,7 +138,7 @@ def test_run_async_handles_agent_error():
     def failing_agent(q):
         raise RuntimeError("Agent crashed")
 
-    with patch("cane_eval.engine.Judge") as MockJudge:
+    with patch("sparse_eval.engine.Judge") as MockJudge:
         MockJudge.return_value.score = _mock_judge_score
 
         runner = ReliabilityRunner(api_key="test-key", verbose=False, concurrency=2)
@@ -151,8 +151,8 @@ def test_run_async_handles_agent_error():
 
 def test_backward_compat_aliases():
     """Old names EvalRunner, TestSuite, TestCase still work."""
-    from cane_eval.engine import EvalRunner
-    from cane_eval.suite import TestSuite, TestCase
+    from sparse_eval.engine import EvalRunner
+    from sparse_eval.suite import TestSuite, TestCase
 
     assert EvalRunner is ReliabilityRunner
     assert TestSuite is ReliabilitySuite

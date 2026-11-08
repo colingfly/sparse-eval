@@ -5,8 +5,8 @@ Provides criteria plugins for evaluating multi-agent orchestration quality:
 routing correctness, handoff quality, context preservation, and convergence.
 """
 
-from cane_eval.criteria import CriterionPlugin, CriterionType
-from cane_eval.swarm.models import (
+from sparse_eval.criteria import CriterionPlugin, CriterionType
+from sparse_eval.swarm.models import (
     SwarmTrace,
     SwarmTestCase,
     SwarmMessageRole,
